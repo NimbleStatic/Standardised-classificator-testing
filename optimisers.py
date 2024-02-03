@@ -14,6 +14,12 @@ class BaseOptimiser:
         return x0 - new_ss * gradient
 
 
+class NotNeededOptimiser(BaseOptimiser):
+    def __init__():
+        # A placeholder class for uniformity in use of the classifiers with and without optimisation based on gradient descent
+        pass
+
+
 class AdamOptimiser(BaseOptimiser):
     def __init__(
         self, alpha: float = 0.001, beta1: float = 0.9, beta2: float = 0.999, eps=1e-8
