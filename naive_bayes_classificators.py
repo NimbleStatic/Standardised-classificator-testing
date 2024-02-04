@@ -42,8 +42,10 @@ class NormalDistributionCalculator:
 
 
 class NaiveBayesClassifier(BaseClassificator):
-    def __init__(self, distribution_calc: NormalDistributionCalculator):
+    def __init__(self, distribution_calc: NormalDistributionCalculator = None):
         super().__init__()
+        if distribution_calc is None:
+            distribution_calc = NormalDistributionCalculator()
         self.dc = distribution_calc
 
     def train_on_data(self, X: List[array], Y: List[int], tr: TrainingParams):
@@ -100,5 +102,5 @@ class NaiveBayesClassifier(BaseClassificator):
         return best_class
 
     def classify_sample_list(self, X: List[array]):
-        Y_pred = [self.predict_class(x) for x in X]
+        Y_pred = [self.classify_sample(x) for x in X]
         return Y_pred
