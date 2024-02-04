@@ -3,7 +3,11 @@ import numpy as np
 from numpy import array
 from matplotlib import pyplot as plt
 from random import random, choice, randint
-from base_classificator_class import BaseClassificator
+from base_classificator_class import (
+    BaseClassificator,
+    TrainingRequirements,
+    TrainingParams,
+)
 from optimisers import NotNeededOptimiser
 import timeit
 
@@ -37,42 +41,12 @@ class NormalDistributionCalculator:
         return propability_functions_for_params
 
 
-class BaseClassificator:
-    def __init__(self) -> None:
-        self.classes = []
-        self.training_stats = []
-
-    def classify_sample(self, x: array):
-        return choice(self.classes)
-
-    def classify_sample_list(self, X: List[array]) -> List[int]:
-        return [self.classify_sample(x) for x in X]
-
-    def train_on_data(self, X: List[array], Y: List[int], optimiser=None):
-        training_note = {}
-        t1 = timeit.default_timer()
-        for y in Y:
-            if y not in self.classes:
-                self.classes.append(y)
-
-        training_note["time_training"] = timeit.default_timer() - t1
-        self.training_stats.append(training_note)
-        return training_note
-
-
 class NaiveBayesClassifier(BaseClassificator):
-    def __init__(
-        self,
-        distribution_calc: NormalDistributionCalculator,
-        X: List[array],
-        Y: list,
-    ):
+    def __init__(self, distribution_calc: NormalDistributionCalculator):
         super().__init__()
         self.dc = distribution_calc
 
-    def train_on_data(
-        self, X: List[array], Y: List[int], optimiser: NotNeededOptimiser = None
-    ):
+    def train_on_data(self, X: List[array], Y: List[int], tr: TrainingParams):
         training_note = {}
         t1 = timeit.default_timer()
         self.Y_prob_functions = self._calculate_distributions_for_data(X, Y)
