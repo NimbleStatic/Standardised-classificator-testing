@@ -1,19 +1,16 @@
 from base_classificator_class import BaseClassificator, TrainingParams
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 from random import random
 from copy import deepcopy
 from numpy import array
 
 
 class BinaryClassifficatorPerformanceAnaliser:
-    def __init__(self, classifier: BaseClassificator):
-        self.classifier = classifier
+    def __init__(self):
+        pass
 
-    def predict_with_classifier(self, X: List[array]):
-        predicted_Y = self.classifier.classify_sample_list(X)
-        return predicted_Y
-
-    def create_confusion_dict(self, Y_data, Y_predicted) -> dict:
+    def create_confusion_dict(self, Y_data: List[int], Y_predicted: List[int]) -> dict:
+        # positive is 1 negative is everything else
         tp_n = 0
         fp_n = 0
         tn_n = 0
@@ -87,8 +84,7 @@ class BinaryClassifficatorPerformanceAnaliser:
 
         return accuracy_metrics
 
-    def get_full_performance_analisys(self, X, Y):
-        Ypred = self.predict_with_classifier(X)
-        conf_dict = self.create_confusion_dict(Y, Ypred)
+    def get_full_performance_analisys(self, X, Y, Y_predicted) -> Dict[str, float]:
+        conf_dict = self.create_confusion_dict(Y, Y_predicted)
         accuracy_metrics = self.calculate_extended_accuracy_metrics(conf_dict)
         return accuracy_metrics
