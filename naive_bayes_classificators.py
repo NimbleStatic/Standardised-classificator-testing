@@ -162,7 +162,12 @@ class NaiveBayesClassifier(BaseClassificator):
 
 
 class SemiNaiveBayesClassifier(NaiveBayesClassifier):
-    def __init__(self, distribution_calc: NormalDistributionCalculator = None):
+    def __init__(
+        self,
+        distribution_calc: NormalDistributionCalculator = None,
+        dampening_power: float = 0.2,
+    ):
+        self.dampening_power = dampening_power
         super().__init__(distribution_calc)
 
     def get_class_scores(self, x: array):
@@ -171,16 +176,47 @@ class SemiNaiveBayesClassifier(NaiveBayesClassifier):
             propability = 1
             for i in range(len(x)):
                 value = functions[i](x[i])
-                dampened_value = value + self.dampening[i]
+                dampened_value = value + (self.dampening_power * self.dampening[i])
                 propability = propability * dampened_value
             scores[y] = propability
         return scores
 
-    def set_dampening(self, dampening: List[float]):
-        self.dampening = dampening
-
     def train_on_data(self, X: List, Y: List[int], tp: TrainingParams):
-        self.dampening = [1 for _ in X[0]]
+        self.dampening = self.calculate_mean_abs_correlation(X)
         return super().train_on_data(X, Y, tp)
-    
-    def calculate_correlation_of_atributes(self, index_attr1:int,index_attr2:int,)
+
+    def calculate_correlation_of_atributes(self, X1: List[float], X2: List[float]):
+        meanx1 = np.average(X1)
+        meanx2 = np.average(X2)
+        covariance = 0
+        standard_devaition_x1 = 0
+        standard_devaition_x2 = 0
+        for i in range(len(X1)):
+            x1 = X1[i]
+            x2 = X2[i]
+            covariance += (x1 - meanx1) * (x2 - meanx2)
+            standard_devaition_x1 += (x1 - meanx1) ** 2
+            standard_devaition_x2 += (x2 - meanx2) ** 2
+        return covariance / ((standard_devaition_x1 * standard_devaition_x2) ** 0.5)
+
+    def separate_attributes(self, X: List[array]):
+        nr_of_attr = len(X[0])
+        separated = []
+        for i in range(nr_of_attr):
+            X_s = [x[i] for x in X]
+            separated.append(X_s)
+        return separated
+
+    def calculate_mean_abs_correlation(self, X: List[array]):
+
+        attributes = self.separate_attributes(X)
+        mean_attr_correlations = []
+        for ix1, X1 in enumerate(attributes):
+            correlations = []
+            for ix2, X2 in enumerate(attributes):
+                if ix1 != ix2:
+                    correlations.append(
+                        abs(self.calculate_correlation_of_atributes(X1, X2))
+                    )
+            mean_attr_correlations.append(np.mean(correlations))
+        return mean_attr_correlations
