@@ -53,8 +53,8 @@ class BaseClassificator:
 
 
 if __name__ == "__main__":
-    training_data_X = [i for i in range(1000)]
-    training_data_Y = [i for i in range(100000)]
+    training_data_X = [i for i in range(10)]
+    training_data_Y = [i for i in range(10)]
     optimiser = BaseOptimiser(1, 1)
     base_classifier = BaseClassificator()
     training_note = base_classifier.train_on_data(

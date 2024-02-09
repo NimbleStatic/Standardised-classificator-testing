@@ -81,13 +81,26 @@ class PermanentDataOperations:
         self._calculate_normalisation_parameter_limits()
 
     def _calculate_normalisation_parameter_limits(self):
-        self.min_limit = self.X[0]
-        self.max_limit = self.X[0]
+        self.min_limit = list(self.X[0])
+        self.max_limit = list(self.X[0])
 
         for x in self.X[1:]:
             for i, value in enumerate(x):
-                self.min_limit[i] = min(self.min_limit[i], value)
-                self.max_limit[i] = max(self.max_limit[i], value)
+                if value < self.min_limit[i]:
+                    self.min_limit[i] = value
+                if value > self.max_limit[i]:
+                    self.max_limit[i] = value
+        print(self.min_limit)
+        print(self.max_limit)
+
+        self.min_limit = array(self.min_limit)
+        self.max_limit = array(self.max_limit)
+        self.val_amplitude = (self.max_limit) - (self.min_limit)
 
     def normalise_sample(self, x: array):
         x_capped = np.clip(x, self.min_limit, self.max_limit)
+        x_normalised = (x_capped - self.min_limit) / self.val_amplitude
+        return x_normalised
+
+    def normalise_sample_list(self, X: List[array]):
+        return [self.normalise_sample(x) for x in X]
