@@ -90,8 +90,6 @@ class PermanentDataOperations:
                     self.min_limit[i] = value
                 if value > self.max_limit[i]:
                     self.max_limit[i] = value
-        print(self.min_limit)
-        print(self.max_limit)
 
         self.min_limit = array(self.min_limit)
         self.max_limit = array(self.max_limit)
