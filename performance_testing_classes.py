@@ -28,7 +28,6 @@ class BinaryClassifficatorPerformanceAnaliser:
                 fn_n += 1
 
         confusion_dict = {"tp": tp_n, "fp": fp_n, "tn": tn_n, "fn": fn_n}
-        print(confusion_dict)
         return confusion_dict
 
     def calculate_error(self, conf_dict: dict) -> float:
