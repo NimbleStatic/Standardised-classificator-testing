@@ -176,7 +176,9 @@ class SemiNaiveBayesClassifier(NaiveBayesClassifier):
             propability = 1
             for i in range(len(x)):
                 value = functions[i](x[i])
-                dampened_value = value + (self.dampening_power * self.dampening[i])
+                dampened_value = (value) ** (
+                    1 + (self.dampening_power * self.dampening[i])
+                )
                 propability = propability * dampened_value
             scores[y] = propability
         return scores
